@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import * as go from 'gojs';
 import { DataSyncService, DiagramComponent, PaletteComponent } from 'gojs-angular';
 import {RadialLayout} from '../RadialLayout';
-
+import { Observable, of, throwError } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { catchError, tap, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-terrorvision',
@@ -10,14 +12,47 @@ import {RadialLayout} from '../RadialLayout';
   styleUrls: ['./terrorvision.component.css']
 })
 export class TerrorvisionComponent implements OnInit {
+  public network: LotusNetwork;
+  public observableNetwork: Observable<LotusNetwork>;
+  public myDiagram: any;
 
-  constructor() { }
+  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {}
 
-  ngOnInit(): void {
-    this.initDiagram();
+  getObservableNetwork(): Observable<LotusNetwork>
+  {
+    return this.http.get<any>(this.baseUrl + 'lotusnetwork')
+      .pipe(
+        tap(product => console.log('fetched LotusNetwork')),
+        catchError(this.handleError('getObservableNetwork', []))
+      );
   }
 
-  myDiagram: any;
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+
+      // TODO: send the error to remote logging infrastructure
+      console.error(error); // log to console instead
+
+      // Let the app keep running by returning an empty result.
+      return of(result as T);
+    };
+  }
+
+
+  ngOnInit(): void
+  {
+   
+    this.getObservableNetwork()
+      .subscribe((res: any) => {
+        this.network = res;
+        this.initDiagram();
+        this.generateGraph();
+      }, err => {
+        console.log(err);
+      });
+  }
+
+
   public initDiagram() {
 
     const $ = go.GraphObject.make;
@@ -144,8 +179,6 @@ export class TerrorvisionComponent implements OnInit {
           },
           new go.Binding("stroke", "color"))
       );
-
-    this.generateGraph();
   }
 
   public  nodeClicked(e, root) {
@@ -163,39 +196,23 @@ export class TerrorvisionComponent implements OnInit {
     diagram.layoutDiagram(true);
   }
   public generateGraph() {
-    var names = [
-      "Joshua", "Daniel", "Robert", "Noah", "Anthony",
-      "Elizabeth", "Addison", "Alexis", "Ella", "Samantha",
-      "Joseph", "Scott", "James", "Ryan", "Benjamin",
-      "Walter", "Gabriel", "Christian", "Nathan", "Simon",
-      "Isabella", "Emma", "Olivia", "Sophia", "Ava",
-      "Emily", "Madison", "Tina", "Elena", "Mia",
-      "Jacob", "Ethan", "Michael", "Alexander", "William",
-      "Natalie", "Grace", "Lily", "Alyssa", "Ashley",
-      "Sarah", "Taylor", "Hannah", "Brianna", "Hailey",
-      "Christopher", "Aiden", "Matthew", "David", "Andrew",
-      "Kaylee", "Juliana", "Leah", "Anna", "Allison",
-      "John", "Samuel", "Tyler", "Dylan", "Jonathan"
-    ];
-
+   
     var nodeDataArray = [];
-    for (var i = 0; i < names.length; i++) {
-      nodeDataArray.push({ key: i, text: names[i], color: go.Brush.randomColor(128, 240) });
+    for (var i = 0; i < this.network.nodes.length; i++) {
+      nodeDataArray.push({ key: this.network.nodes[i].key, text: this.network.nodes[i].text, color: this.network.nodes[i].colour });
     }
 
     var linkDataArray = [];
-    var num = nodeDataArray.length;
-    for (var i = 0; i < num * 2; i++) {
-      var a = Math.floor(Math.random() * num);
-      var b = Math.floor(Math.random() * num / 4) + 1;
-      linkDataArray.push({ from: a, to: (a + b) % num, color: go.Brush.randomColor(0, 127) });
+    var num = this.network.links.length;
+    for (var i = 0; i < num; i++) {
+      linkDataArray.push({ from: this.network.links[i].from, to: this.network.links[i].to, color: this.network.links[i].colour });
     }
 
     this.myDiagram.model = new go.GraphLinksModel(nodeDataArray, linkDataArray);
-
     var someone = nodeDataArray[Math.floor(Math.random() * nodeDataArray.length)];
     this.nodeClicked(null, this.myDiagram.findNodeForData(someone));
   }
+
   
   public adjustMaxLayers() {
     var nick = document.getElementById('maxLayersChanger') as HTMLInputElement;
@@ -214,3 +231,21 @@ export class TerrorvisionComponent implements OnInit {
   }
 
 }
+
+interface LotusNetwork {
+  nodes: NodeData[];
+  links: LinkData[];
+}
+
+interface NodeData {
+  key: number;
+  text: string;
+  colour: string;
+}
+
+interface LinkData {
+  from: number;
+  to: number;
+  colour: string;
+}
+

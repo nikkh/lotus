@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lotus-web", "lotus-web\lotus-web.csproj", "{FEC13BA7-C14A-4B72-965F-C2767FE12067}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Playground", "Playground\Playground.csproj", "{82BF67DC-BAD0-4D5F-A1FF-8C498A958A1F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GremlinNetSample", "GremlinNetSample\GremlinNetSample.csproj", "{F6B6890D-DC65-4FE6-ACAF-E2A69C5EBCBD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{FEC13BA7-C14A-4B72-965F-C2767FE12067}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEC13BA7-C14A-4B72-965F-C2767FE12067}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEC13BA7-C14A-4B72-965F-C2767FE12067}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82BF67DC-BAD0-4D5F-A1FF-8C498A958A1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82BF67DC-BAD0-4D5F-A1FF-8C498A958A1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82BF67DC-BAD0-4D5F-A1FF-8C498A958A1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82BF67DC-BAD0-4D5F-A1FF-8C498A958A1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6B6890D-DC65-4FE6-ACAF-E2A69C5EBCBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6B6890D-DC65-4FE6-ACAF-E2A69C5EBCBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6B6890D-DC65-4FE6-ACAF-E2A69C5EBCBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6B6890D-DC65-4FE6-ACAF-E2A69C5EBCBD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

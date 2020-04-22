@@ -3,3 +3,6 @@
 ################################################################################
 
 /lotus/GremlinNetSample/bin/Debug/net461
+/lotus/GremlinNetSample/obj
+/lotus/Playground/bin/Debug/netcoreapp3.1
+/lotus/Playground/obj
