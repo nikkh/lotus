@@ -11,3 +11,4 @@
 /lotus/.vs/lotus/DesignTimeBuild
 /lotus/lotus-data-generator/obj
 /lotus/lotus-data-generator/local.settings.json
+/lotus/lotus-web/Properties/launchSettings.json
