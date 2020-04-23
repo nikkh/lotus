@@ -42,13 +42,19 @@ namespace GremlinNetSample
                 
                 PrintStatusAttributes(resultSet.StatusAttributes);
                 Console.WriteLine();
-                Thread.Sleep(1000); // avoid throttling
+                
             }
             catch (Exception e)
             {
                 var currentColour = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.Red;
+                
                 Console.WriteLine($"Exception: {e.Message}");
+                if (e.InnerException != null) 
+                {
+                    
+                    Console.WriteLine($"InnerException: {e.InnerException.Message}");
+                }
                 Console.ForegroundColor = currentColour;
             }
         }
@@ -98,6 +104,7 @@ namespace GremlinNetSample
 
             using (var gremlinClient = new GremlinClient(gremlinServer, new GraphSON2Reader(), new GraphSON2Writer(), GremlinClient.GraphSON2MimeType))
             {
+                
 
                 ExecuteCmd(gremlinClient, new KeyValuePair<string, string> ("Cleanup", "g.V().drop()" ));
 

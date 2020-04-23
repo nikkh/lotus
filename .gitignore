@@ -9,3 +9,5 @@
 /lotus/GremlinNetSample/local.settings.json
 /lotus/lotus-web/local.settings.json
 /lotus/.vs/lotus/DesignTimeBuild
+/lotus/lotus-data-generator/obj
+/lotus/lotus-data-generator/local.settings.json

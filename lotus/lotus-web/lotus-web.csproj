@@ -27,12 +27,15 @@
 
   <ItemGroup>
     <Content Remove="local.settings.json" />
+    <Content Remove="settings.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="local.settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <Generator>SettingsSingleFileGenerator</Generator>
     </None>
   </ItemGroup>
 

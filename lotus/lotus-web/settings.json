@@ -1,0 +1,8 @@
+﻿{
+  "CosmosContext": {
+    "HostName": "lotus.gremlin.cosmosdb.azure.com",
+    "Port": 443,
+    "Database": "graphdb",
+    "Collection": "Persons"
+  }
+}
