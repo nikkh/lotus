@@ -1,88 +1,128 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Gremlin.Net.Driver;
 using Gremlin.Net.Driver.Exceptions;
 using Gremlin.Net.Structure.IO.GraphSON;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace GremlinNetSample
 {
-    /// <summary>
-    /// Sample program that shows how to get started with the Graph (Gremlin) APIs for Azure Cosmos DB using the open-source connector Gremlin.Net
-    /// </summary>
+    
     class Program
     {
         // Azure Cosmos DB Configuration variables
         // Replace the values in these variables to your own.
-        private static string hostname = "lotus.gremlin.cosmosdb.azure.com";
-        private static int port = 443;
-        private static string authKey = "kBnSk8NI6VRV8blMX4KQASMMI1xtNydEb4IJm7g82D8ZTIXS5BFxt9NcI6z8cVMxGjiBPmwRkFmHmForBonHXQ==";
-        private static string database = "graphdb";
-        private static string collection = "Persons";
+        static string hostname = "";
+        static int port = 0;
+        static string authKey = "";
+        static string database = "";
+        static string collection = "";
 
-        // Gremlin queries that will be executed.
-        private static Dictionary<string, string> gremlinQueries = new Dictionary<string, string>
+        static void ExecuteCmd(GremlinClient gremlinClient, KeyValuePair<string, string> command)
         {
-            { "Cleanup",        "g.V().drop()" },
-            { "AddVertex 1",    "g.addV('person').property('id', 'thomas').property('firstName', 'Thomas').property('age', 44)" },
-            { "AddVertex 2",    "g.addV('person').property('id', 'mary').property('firstName', 'Mary').property('lastName', 'Andersen').property('age', 39)" },
-            { "AddVertex 3",    "g.addV('person').property('id', 'ben').property('firstName', 'Ben').property('lastName', 'Miller')" },
-            { "AddVertex 4",    "g.addV('person').property('id', 'robin').property('firstName', 'Robin').property('lastName', 'Wakefield')" },
-            { "AddEdge 1",      "g.V('thomas').addE('knows').to(g.V('mary'))" },
-            { "AddEdge 2",      "g.V('thomas').addE('knows').to(g.V('ben'))" },
-            { "AddEdge 3",      "g.V('ben').addE('knows').to(g.V('robin'))" },
-            { "UpdateVertex",   "g.V('thomas').property('age', 44)" },
-            { "CountVertices",  "g.V().count()" },
-            { "Filter Range",   "g.V().hasLabel('person').has('age', gt(40))" },
-            { "Project",        "g.V().hasLabel('person').values('firstName')" },
-            { "Sort",           "g.V().hasLabel('person').order().by('firstName', decr)" },
-            { "Traverse",       "g.V('thomas').out('knows').hasLabel('person')" },
-            { "Traverse 2x",    "g.V('thomas').out('knows').hasLabel('person').out('knows').hasLabel('person')" },
-            { "Loop",           "g.V('thomas').repeat(out()).until(has('id', 'robin')).path()" },
-            { "DropEdge",       "g.V('thomas').outE('knows').where(inV().has('id', 'mary')).drop()" },
-            { "CountEdges",     "g.E().count()" },
-            { "DropVertex",     "g.V('thomas').drop()" },
-        };
+            try
+            {
+                var resultSet = SubmitRequest(gremlinClient, command).Result;
+                if (resultSet.Count > 0)
+                {
+                    Console.WriteLine("\tResult:");
+                    foreach (var result in resultSet)
+                    {
+                        
+                        string output = JsonConvert.SerializeObject(result);
+                        Console.WriteLine($"\t{output}");
+                    }
+                    Console.WriteLine();
+                }
+
+                
+                PrintStatusAttributes(resultSet.StatusAttributes);
+                Console.WriteLine();
+                Thread.Sleep(1000); // avoid throttling
+            }
+            catch (Exception e)
+            {
+                var currentColour = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Exception: {e.Message}");
+                Console.ForegroundColor = currentColour;
+            }
+        }
 
         // Starts a console application that executes every Gremlin query in the gremlinQueries dictionary. 
         static void Main(string[] args)
         {
+            var configBuilder = new ConfigurationBuilder()
+               .SetBasePath(Directory.GetCurrentDirectory())
+               .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
+               .AddJsonFile("settings.json", optional: true, reloadOnChange: true)
+               .AddEnvironmentVariables();
+
+            IConfiguration configuration = configBuilder.Build();
+                        
+            try
+            {
+                hostname = configuration["HostName"];
+                port = Int32.Parse(configuration["Port"]);
+                authKey = configuration["AuthKey"];
+                database = configuration["Database"];
+                collection = configuration["Collection"];
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Exception caught while accessing configuration: {e.Message}");
+                return;
+            }
+
+            string[] names = {
+                                 "Joshua", "Daniel", "Robert", "Noah", "Anthony", "Elizabeth", "Addison", "Alexis", "Ella", "Samantha",
+                                 "Joseph", "Scott", "James", "Ryan", "Benjamin",
+                                 "Walter", "Gabriel", "Christian", "Nathan", "Simon",
+                                 "Isabella", "Emma", "Olivia", "Sophia", "Ava",
+                                 "Emily", "Madison", "Tina", "Elena", "Mia",
+                                 "Jacob", "Ethan", "Michael", "Alexander", "William",
+                                 "Natalie", "Grace", "Lily", "Alyssa", "Ashley",
+                                 "Sarah", "Taylor", "Hannah", "Brianna", "Hailey",
+                                 "Christopher", "Aiden", "Matthew", "David", "Andrew",
+                                 "Kaylee", "Juliana", "Leah", "Anna", "Allison",
+                                 "John", "Samuel", "Tyler", "Dylan", "Jonathan"
+            };
+
             var gremlinServer = new GremlinServer(hostname, port, enableSsl: true, 
                                                     username: "/dbs/" + database + "/colls/" + collection, 
                                                     password: authKey);
 
             using (var gremlinClient = new GremlinClient(gremlinServer, new GraphSON2Reader(), new GraphSON2Writer(), GremlinClient.GraphSON2MimeType))
             {
-                foreach (var query in gremlinQueries)
+
+                ExecuteCmd(gremlinClient, new KeyValuePair<string, string> ("Cleanup", "g.V().drop()" ));
+
+
+                foreach (var name in names)
                 {
-                    Console.WriteLine(String.Format("Running this query: {0}: {1}", query.Key, query.Value));
+                    string query = $"g.addV('person').property('id', '{name}').property('firstName', '{name}').property('age', 44)";
+                    ExecuteCmd(gremlinClient, new KeyValuePair<string, string>("CreatePerson", query));
+                    
+                }
 
-                    // Create async task to execute the Gremlin query.
-                    var resultSet = SubmitRequest(gremlinClient, query).Result;
-                    if (resultSet.Count > 0)
-                    {
-                        Console.WriteLine("\tResult:");
-                        foreach (var result in resultSet)
-                        {
-                            // The vertex results are formed as Dictionaries with a nested dictionary for their properties
-                            string output = JsonConvert.SerializeObject(result);
-                            Console.WriteLine($"\t{output}");
-                        }
-                        Console.WriteLine();
-                    }
-
-                    // Print the status attributes for the result set.
-                    // This includes the following:
-                    //  x-ms-status-code            : This is the sub-status code which is specific to Cosmos DB.
-                    //  x-ms-total-request-charge   : The total request units charged for processing a request.
-                    PrintStatusAttributes(resultSet.StatusAttributes);
-                    Console.WriteLine();
+                // Now generate some relationships
+                Random r = new Random();
+                for (int i = 0; i < names.Length * 3; i++)
+                {
+                    int from = r.Next(0, names.Length);
+                    int to = r.Next(0, names.Length);
+                    if (from == to) from++;
+                    string query = $"g.V('{names[from]}').addE('knows').to(g.V('{names[to]}'))";
+                    ExecuteCmd(gremlinClient, new KeyValuePair<string, string>("CreateRelationship", query));
                 }
             }
 
             // Exit program
-            Console.WriteLine("Done. Press any key to exit...");
+            Console.WriteLine("Done. Press enter to exit...");
             Console.ReadLine();
         }
 
@@ -99,12 +139,6 @@ namespace GremlinNetSample
                 // Print the Gremlin status code.
                 Console.WriteLine($"\tStatusCode: {e.StatusCode}");
 
-                // On error, ResponseException.StatusAttributes will include the common StatusAttributes for successful requests, as well as
-                // additional attributes for retry handling and diagnostics.
-                // These include:
-                //  x-ms-retry-after-ms         : The number of milliseconds to wait to retry the operation after an initial operation was throttled. This will be populated when
-                //                              : attribute 'x-ms-status-code' returns 429.
-                //  x-ms-activity-id            : Represents a unique identifier for the operation. Commonly used for troubleshooting purposes.
                 PrintStatusAttributes(e.StatusAttributes);
                 Console.WriteLine($"\t[\"x-ms-retry-after-ms\"] : { GetValueAsString(e.StatusAttributes, "x-ms-retry-after-ms")}");
                 Console.WriteLine($"\t[\"x-ms-activity-id\"] : { GetValueAsString(e.StatusAttributes, "x-ms-activity-id")}");

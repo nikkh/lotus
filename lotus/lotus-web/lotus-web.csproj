@@ -14,6 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Gremlin.Net" Version="3.4.6" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.2" />
   </ItemGroup>
 
@@ -22,6 +23,17 @@
     <Content Remove="$(SpaRoot)**" />
     <None Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="local.settings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="local.settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Generator>SettingsSingleFileGenerator</Generator>
+    </None>
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

@@ -6,3 +6,6 @@
 /lotus/GremlinNetSample/obj
 /lotus/Playground/bin/Debug/netcoreapp3.1
 /lotus/Playground/obj
+/lotus/GremlinNetSample/local.settings.json
+/lotus/lotus-web/local.settings.json
+/lotus/.vs/lotus/DesignTimeBuild

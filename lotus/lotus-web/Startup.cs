@@ -1,3 +1,4 @@
+using lotus_web.Contexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -5,6 +6,7 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.IO;
 
 namespace lotus_web
 {
@@ -26,11 +28,23 @@ namespace lotus_web
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            var configBuilder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+               .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
+               .AddJsonFile("settings.json", optional: true, reloadOnChange: true)
+               .AddEnvironmentVariables();
+
+            IConfiguration configuration = configBuilder.Build();
+            services.AddSingleton(configuration);
+            services.AddSingleton(configuration.GetSection("CosmosContext").Get<CosmosContext>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+           
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
