@@ -64,19 +64,19 @@ namespace GremlinNetSample
         {
             var configBuilder = new ConfigurationBuilder()
                .SetBasePath(Directory.GetCurrentDirectory())
-               .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
                .AddJsonFile("settings.json", optional: true, reloadOnChange: true)
+               .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
                .AddEnvironmentVariables();
 
             IConfiguration configuration = configBuilder.Build();
                         
             try
             {
-                hostname = configuration["HostName"];
-                port = Int32.Parse(configuration["Port"]);
-                authKey = configuration["AuthKey"];
-                database = configuration["Database"];
-                collection = configuration["Collection"];
+                hostname = configuration["CosmosContext:HostName"];
+                port = Int32.Parse(configuration["CosmosContext:Port"]);
+                authKey = configuration["CosmosContext:AuthKey"];
+                database = configuration["CosmosContext:Database"];
+                collection = configuration["CosmosContext:Collection"];
             }
             catch (Exception e)
             {

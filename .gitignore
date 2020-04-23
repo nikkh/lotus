@@ -12,3 +12,5 @@
 /lotus/lotus-data-generator/obj
 /lotus/lotus-data-generator/local.settings.json
 /lotus/lotus-web/Properties/launchSettings.json
+/lotus/lotus-data-generator/Properties/launchSettings.json
+/lotus/lotus-data-generator/bin/Debug/net461

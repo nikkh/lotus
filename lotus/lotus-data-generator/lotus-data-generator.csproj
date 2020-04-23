@@ -18,7 +18,9 @@
 
   <ItemGroup>
     <None Update="local.settings.json">
-      <Generator>SettingsSingleFileGenerator</Generator>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

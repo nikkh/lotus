@@ -1,0 +1,8 @@
+﻿{
+  "CosmosContext": {
+    "HostName": "<your hostname>.gremlin.cosmosdb.azure.com",
+    "Port": 443,
+    "Database": "<your database>",
+    "Collection": "<your collection>"
+  }
+}
