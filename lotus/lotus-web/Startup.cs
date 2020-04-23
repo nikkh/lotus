@@ -31,8 +31,8 @@ namespace lotus_web
 
             var configBuilder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-               .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
-               .AddJsonFile("settings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("settings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
                .AddEnvironmentVariables();
 
             IConfiguration configuration = configBuilder.Build();

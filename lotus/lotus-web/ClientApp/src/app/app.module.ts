@@ -7,18 +7,14 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
-import { CounterComponent } from './counter/counter.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
-import { TerrorvisionComponent } from './terrorvision/terrorvision.component';
+import { ExplorerComponent } from './explorer/explorer.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavMenuComponent,
     HomeComponent,
-    CounterComponent,
-    FetchDataComponent,
-    TerrorvisionComponent
+    ExplorerComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -26,9 +22,7 @@ import { TerrorvisionComponent } from './terrorvision/terrorvision.component';
     FormsModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
-      { path: 'terrorvision', component: TerrorvisionComponent }
+      { path: 'explorer', component: ExplorerComponent }
     ])
   ],
   providers: [],

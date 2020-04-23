@@ -7,11 +7,11 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { catchError, tap, map } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-terrorvision',
-  templateUrl: './terrorvision.component.html',
-  styleUrls: ['./terrorvision.component.css']
+  selector: 'app-explorer',
+  templateUrl: './explorer.component.html',
+  styleUrls: ['./explorer.component.css']
 })
-export class TerrorvisionComponent implements OnInit {
+export class ExplorerComponent implements OnInit {
   public network: LotusNetwork;
   public observableNetwork: Observable<LotusNetwork>;
   public myDiagram: any;
