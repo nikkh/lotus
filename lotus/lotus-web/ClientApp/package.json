@@ -27,7 +27,7 @@
     "core-js": "^3.6.5",
     "gojs": "^2.1.8",
     "gojs-angular": "1.0.2",
-    "jquery": "3.4.1",
+    "jquery": "3.5.0",
     "oidc-client": "^1.10.1",
     "popper.js": "^1.16.1",
     "rxjs": "^6.5.3",
